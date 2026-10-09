@@ -1,10 +1,9 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex,nofollow">
-  <title>Robotic Boomerang Throwing</title>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Robotic Boomerang Throwing via Model-Based Release Design</title>
+  <meta name="description" content="Physical models guide boomerang design and robot throwing-motion design.">
   <script>
     if (location.hostname === "robot-boomerang.github.io") {
       window.cronitor = window.cronitor || function () {
@@ -17,27 +16,85 @@
       document.head.appendChild(tracker);
     }
   </script>
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      box-sizing: border-box;
-      background: #fff;
-      color: #222;
-      font-family: Arial, Helvetica, sans-serif;
-      text-align: center;
-    }
-    h1 { margin: 0 0 16px; font-size: clamp(28px, 5vw, 36px); line-height: 1.2; }
-    p { margin: 0; font-size: 18px; line-height: 1.5; color: #555; }
-  </style>
+  <link rel="stylesheet" href="style.css?v=26">
+  <script src="flight-curve.js?v=22" defer></script><script src="flight-tracks.js?v=22" defer></script><script src="site.js?v=27" defer></script>
 </head>
 <body>
+  <a class="skip" href="#overview">Skip to the research</a>
   <main>
-    <h1>Robotic Boomerang Throwing</h1>
-    <p>Project page coming soon.</p>
+    <header class="hero">
+      <h1>Robotic Boomerang Throwing<br class="desktop-break"> via Model-Based Release Design</h1>
+      <p class="authors"><span><a href="https://liuyangdh.github.io/">Yang Liu</a><sup>1</sup></span><span><a href="https://people.epfl.ch/colin.jones">Colin Jones</a><sup>2</sup></span><span><a href="https://people.epfl.ch/aude.billard">Aude Billard</a><sup>1</sup></span></p>
+      <p class="affiliations"><sup>1</sup> Learning Algorithms and Systems Lab (LASA), EPFL<br><sup>2</sup> Automatic Control Lab, EPFL</p>
+      <p class="paper-links"><a href="https://arxiv.org/abs/2610.10472" target="_blank" rel="noopener noreferrer" title="arXiv:2610.10472"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7M21 3l-11 11M10 3H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-6"/></svg><span>arXiv</span></a><a href="https://arxiv.org/pdf/2610.10472" target="_blank" rel="noopener noreferrer" aria-label="Read the paper PDF"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H5a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9l-6-6Zm0 0v6h6M8 13h8M8 17h8"/></svg><span>Paper</span></a></p>
+      <div class="institution-logos" aria-label="Research institutions"><img class="epfl-logo" src="assets/epfl-logo.png" width="738" height="228" alt="EPFL"><img class="lasa-logo" src="assets/lasa-logo.png" width="937" height="499" alt="LASA — Learning Algorithms and Systems Laboratory"></div>
+      <figure class="hero-media"><div class="flight-player" data-flight="opening"><video id="hero-video" controls autoplay muted loop playsinline preload="auto" poster="assets/opening-demo-clean.jpg" aria-label="Returning robot throw, real time then quarter speed"><source src="assets/opening-demo-clean-loop.mp4" type="video/mp4"></video><svg class="flight-overlay" aria-hidden="true"></svg><span class="speed-label">1×</span></div></figure>
+    </header>
+
+    <section id="overview" class="section">
+      <h2>Model-Based Release Design</h2>
+      <div class="overview-diagram">
+        <div class="design-overview-card launch-design"><h3><a href="#release">Robot launch design</a></h3><p class="design-context">Transient release dynamics: &gt;1,700°/s spin increase in ~100 ms</p><svg class="overview-launch-art" viewBox="85 175 775 500" role="img" aria-labelledby="launch-art-title"><title id="launch-art-title">Original slide illustration of arm motion, grasp angle and in-hand boomerang spin</title><defs><clipPath id="launch-art-clip"><rect x="85" y="175" width="775" height="500"/></clipPath></defs><image href="assets/overview-color-reference.png" width="2142" height="902" clip-path="url(#launch-art-clip)"/></svg><p>Predict release spin<br>Adjust grasp angle <i class="math">θ<sub>g</sub></i> and throw motion <i class="math">q(t)</i></p></div>
+        <div class="shared-state"><span>Shared interface</span><strong>Release state<br><i>V</i><sub>0</sub> &nbsp; <i>ω</i><sub>0</sub></strong></div>
+        <div class="design-overview-card geometry-design"><h3><a href="#aerodynamics">Boomerang geometry design</a></h3><p class="design-context">Flight dynamics at low Reynolds numbers</p><img class="overview-flight-art" src="assets/overview-flight.png" width="1718" height="1400" alt="Original slide illustration of a spinning boomerang curving through flight"><p>Predict flight changes under design changes<br>Adjust size and thickness</p></div>
+      </div>
+    </section>
+
+    <section id="return" class="section">
+      <h2>Iterative design process for a returning throw</h2>
+      <figure class="iteration-figure"><div class="iteration-tabs" role="group" aria-label="Design iterations"><button class="trial-baseline" type="button" data-trial="baseline" aria-pressed="true"><svg class="trial-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5 13 8 4 13.5Z"/></svg><span>Baseline flight</span></button><svg class="process-connector" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18m-7-7 7 7-7 7"/></svg><button class="trial-spin" type="button" data-trial="spin" aria-pressed="false"><svg class="trial-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5 13 8 4 13.5Z"/></svg><span>Increase release spin</span></button><svg class="process-connector" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18m-7-7 7 7-7 7"/></svg><button class="trial-return" type="button" data-trial="return" aria-pressed="false"><svg class="trial-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5 13 8 4 13.5Z"/></svg><span>Reduce blade thickness</span></button></div><div class="flight-player iteration-player" data-flight="baseline"><video id="iteration-video" controls muted playsinline preload="auto" poster="assets/baseline-full-view.jpg" aria-label="Selected robot flight: baseline"><source src="assets/baseline-full-view.mp4" type="video/mp4"></video><svg class="flight-overlay" aria-hidden="true"></svg><span class="speed-label">1×</span></div><div class="iteration-description" id="iteration-description" aria-live="polite"><p class="iteration-setting">Nominal · ~90° grasp · 45 rad/s</p><p>Need more spin to precess → Increase grasp angle</p></div></figure>
+      <details class="measured-evidence"><summary>View measured trajectories</summary><figure id="measured-iterations" class="measured-iterations"><a href="assets/design-iterations.png"><img src="assets/design-iterations.png" width="1050" height="1020" loading="lazy" alt="Three measured 3D flights: baseline, increased release spin, and thinner boomerang"></a></figure></details>
+    </section>
+
+    <section id="flight-intuition" class="section">
+      <h2>Boomerang flight precession intuition</h2>
+      <p class="lead">Fast spin generates lift → Spin lift serves as centripetal force</p>
+      <figure class="original-intuition"><video class="concept-video" controls muted playsinline preload="metadata" poster="assets/slide-flight-intuition.jpg" aria-label="Original flight illustration from the presentation"><source src="assets/slide-flight-intuition.mp4" type="video/mp4"></video><figcaption><a href="https://sciencespectrumu.com/the-simple-science-of-boomerang-flight-bbf062583763" aria-label="Source of the flight animation">Source</a></figcaption></figure>
+    </section>
+
+    <section id="finding" class="section">
+      <h2>Challenge: Dynamic mismatch with humans</h2>
+      <p class="lead">Redesign boomerangs for robots</p>
+      <figure class="capability-figure">
+        <div class="capability-videos"><div><h3>Human throw <span>1×</span></h3><video class="comparison-video" controls muted loop playsinline preload="auto" poster="assets/human-throw-realtime.jpg" aria-label="Human throwing gesture at real time"><source src="assets/human-throw-realtime.mp4" type="video/mp4"></video><p class="media-credit"><a href="https://www.youtube.com/watch?v=QCjLXID-QiA" aria-label="Source of the human throw video">Source</a></p></div><div><h3>Robot throw <span>1×</span></h3><video class="comparison-video" controls muted loop playsinline preload="auto" poster="assets/robot-gesture-realtime.jpg" aria-label="Robot throwing gesture at real time"><source src="assets/robot-gesture-realtime.mp4" type="video/mp4"></video></div></div>
+        <table class="capability-table"><caption>Approximate dynamic capabilities</caption><thead><tr><th scope="col">Capability</th><th scope="col">Human</th><th scope="col"><a href="https://www.duatic.com/dynaarm" target="_blank" rel="noopener noreferrer">DynaArm</a></th></tr></thead><tbody><tr><th scope="row">Arm length</th><td>~80 cm</td><td>110 cm</td></tr><tr class="capability-highlight"><th scope="row">Elbow speed</th><td>~40 rad/s<span class="capability-ratio">~6× faster</span></td><td>7 rad/s</td></tr><tr><th scope="row">Wrist speed</th><td>~25 rad/s</td><td>14 rad/s</td></tr><tr><th scope="row">Hand speed</th><td>~30 m/s</td><td>~10 m/s</td></tr></tbody></table>
+        <figcaption>Human capabilities: rapid overhand throwing <a href="#ref-roach">[1]</a></figcaption>
+      </figure>
+    </section>
+
+    <section id="aerodynamics" class="section">
+      <h2>Spin-averaged flight dynamics</h2>
+      <p class="lead">Rapid spin lets us average wing loads over one revolution <a href="#ref-hess">[2]</a></p>
+      <figure class="concept-module" data-animation="flight"><div class="concept-layout"><video id="flight-animation" class="concept-video flight-animation" controls muted playsinline preload="auto" poster="assets/flight-concept.jpg" aria-label="Original spin-averaged flight dynamics animation"><source src="assets/flight-concept.mp4" type="video/mp4"></video><div class="concept-explanation"><div class="chapter-buttons" role="group" aria-label="Flight animation chapters"><button data-time="0" aria-pressed="true">Spin &amp; attitude</button><button data-time="10.688" aria-pressed="false">Spin averaging</button><button data-time="12.224" aria-pressed="false">Incoming flow</button><button data-time="15.408" aria-pressed="false">Force &amp; torque</button></div><div class="chapter-copy"><p data-index="0">Spin is much faster than precession and inclination change</p><p data-index="1" hidden>Average the wing loads over one revolution</p><p data-index="2" hidden><i>V</i>: center-of-mass velocity<br><i>α</i>: disk angle of attack<br><i>U = V/(ωR)</i>: advance ratio</p><p data-index="3" hidden><i>U</i>: flow asymmetry between advancing and retreating blades<br><i>α</i>: disk orientation relative to incoming air flow</p></div><button class="text-button replay-animation" type="button">Replay</button></div></div></figure>
+    </section>
+
+    <section id="identification" class="section">
+      <h2>Staged identification</h2>
+      <p class="lead">Spin dynamics isolate the spin-axis torque</p>
+      <div class="identification-layout"><video class="concept-video staged-animation" controls muted playsinline preload="auto" poster="assets/staged-identification.jpg" aria-label="Original highlighted spin dynamics and coupling illustration"><source src="assets/staged-identification.mp4" type="video/mp4"></video><ol class="stages"><li>Fit the spin-axis torque dependence</li><li>Retain it while fitting all six coefficient functions</li></ol></div>
+    </section>
+
+    <section id="flight" class="section">
+      <h2>Predicting flight changes across boomerang designs</h2>
+      <p class="lead">Keep the aerodynamic coefficient functions fixed<br>Update mass, radius and inertia</p>
+      <figure class="flight-evidence"><div class="variant-photo"><img src="assets/boomerang-variants.jpg" width="3985" height="1366" loading="lazy" alt="Nominal, thin and large boomerangs"><p>Nominal · Thin · Large</p><p class="small">0.6 mm · 0.4 mm · 0.6 mm<br>85 mm · 85 mm · 106.25 mm radius</p></div><a href="assets/flight-design.png"><img src="assets/flight-design.png" width="1050" height="1050" loading="lazy" alt="Measured and predicted trajectories: the thin boomerang turns tighter, the large boomerang turns wider"></a><figcaption>Thin: tighter turn · Large: wider turn<br>Solid: measured · Dashed: predicted · No refitting</figcaption></figure>
+    </section>
+
+    <section id="release" class="section">
+      <h2>Transient release dynamics</h2>
+      <p class="lead">Fast in-hand spinning during a ~100 ms release<br>The Sliding Pivot model <a href="#ref-sliding-pivot">[3]</a> predicts the release state</p>
+      <figure class="release-module"><div class="release-visual"><div><h3>Robot release <span>1/4×</span></h3><video id="robot-release" controls muted playsinline preload="auto" poster="assets/release-slow.jpg" aria-label="Quarter-speed robot release"><source src="assets/release-slow.mp4" type="video/mp4"></video><button class="text-button" type="button" data-replay-video="robot-release" aria-label="Replay robot release">Replay</button></div><div><h3>Release model</h3><video id="release-animation" class="concept-video release-animation" controls muted playsinline preload="auto" poster="assets/release-concept.jpg" aria-label="Original animated release sequence"><source src="assets/release-concept.mp4" type="video/mp4"></video><button class="text-button" type="button" data-replay-video="release-animation" aria-label="Replay release model">Replay</button></div></div></figure>
+    </section>
+
+    <section id="screening" class="section">
+      <h2>Model screening &amp; robot validation</h2>
+      <p class="lead">Screen motion parameters in simulation → Test the predicted spin response on the robot</p>
+      <figure class="concept-module" data-animation="screening"><div class="concept-layout"><video id="screening-animation" class="concept-video screening-animation" controls muted playsinline preload="auto" poster="assets/screening-concept.jpg" aria-label="Original parameter screening animation"><source src="assets/screening-concept.mp4" type="video/mp4"></video><div class="concept-explanation"><div class="chapter-buttons" role="group" aria-label="Screening animation chapters"><button data-time="0" aria-pressed="true">One condition</button><button data-time="7.200" aria-pressed="false">Many conditions</button><button data-time="12.432" aria-pressed="false">Authority &amp; consistency</button></div><div class="chapter-copy"><p data-index="0">Vary the throw parameter<br>Seek a large, monotonic spin change</p><p data-index="1" hidden>Repeat across operating conditions<br>Seek consistent local changes</p><p data-index="2" hidden>Spin authority: how much a parameter changes release spin<br>Consistency: a similar response across levels and conditions</p></div><button class="text-button replay-animation" type="button">Replay</button></div></div></figure>
+      <figure id="screening-evidence" class="screening-figure"><div class="view-switch" role="group" aria-label="Simulation screening followed by robot validation"><button type="button" data-panel="prediction" aria-pressed="true" aria-controls="prediction"><strong>Model screening</strong><span>Simulation · 512 conditions</span></button><svg class="process-connector" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18m-7-7 7 7-7 7"/></svg><button type="button" data-panel="hardware" aria-pressed="false" aria-controls="hardware"><strong>Robot validation</strong><span>Experiment · 16 throws</span></button></div><div id="prediction" class="evidence-panel"><p class="evidence-purpose">Predicted release spin</p><a class="evidence-wide" href="assets/motion-screening.png" target="_blank" rel="noopener"><img src="assets/motion-screening.png" width="2070" height="952" loading="lazy" alt="Simulated release spin across operating conditions, with grasp angle providing the largest spin authority"></a><div class="evidence-grid"><a href="assets/motion-screening-grasp.png" target="_blank" rel="noopener"><span class="parameter-label">Grasp angle</span><img src="assets/motion-screening-grasp.png" width="613" height="952" loading="lazy" alt="Grasp angle: predicted release spin"></a><a href="assets/motion-screening-wrist.png" target="_blank" rel="noopener"><span class="parameter-label">Wrist deceleration</span><img src="assets/motion-screening-wrist.png" width="613" height="952" loading="lazy" alt="Wrist deceleration: predicted release spin"></a><a href="assets/motion-screening-elbow.png" target="_blank" rel="noopener"><span class="parameter-label">Elbow deceleration</span><img src="assets/motion-screening-elbow.png" width="613" height="952" loading="lazy" alt="Elbow deceleration: predicted release spin"></a><a href="assets/motion-screening-delay.png" target="_blank" rel="noopener"><span class="parameter-label">Gripper delay</span><img src="assets/motion-screening-delay.png" width="613" height="952" loading="lazy" alt="Gripper delay: predicted release spin"></a></div><figcaption class="evidence-conclusion">Grasp angle provides the greatest spin authority<br>Gripper delay gives the least consistent spin response</figcaption></div><div id="hardware" class="evidence-panel" hidden><p class="evidence-purpose">Measured release spin: nominal and thin boomerangs</p><a class="evidence-wide" href="assets/motion-validation.png" target="_blank" rel="noopener"><img src="assets/motion-validation.png" width="2070" height="952" loading="lazy" alt="Measured release spin on the robot reproduces the predicted ranking of grasp angle, elbow and wrist deceleration"></a><div class="evidence-grid"><a href="assets/motion-validation-grasp.png" target="_blank" rel="noopener"><span class="parameter-label">Grasp angle</span><img src="assets/motion-validation-grasp.png" width="772" height="952" loading="lazy" alt="Grasp angle: measured release spin"></a><a href="assets/motion-validation-wrist.png" target="_blank" rel="noopener"><span class="parameter-label">Wrist deceleration</span><img src="assets/motion-validation-wrist.png" width="772" height="952" loading="lazy" alt="Wrist deceleration: measured release spin"></a><a href="assets/motion-validation-elbow.png" target="_blank" rel="noopener"><span class="parameter-label">Elbow deceleration</span><img src="assets/motion-validation-elbow.png" width="772" height="952" loading="lazy" alt="Elbow deceleration: measured release spin"></a><div class="validation-summary"><p>Robot tests confirm the spin authority ranking</p><p>Grasp angle ≫ elbow deceleration &gt; wrist deceleration</p></div></div><figcaption class="evidence-conclusion">Robot tests confirm the spin authority ranking<br>Grasp angle ≫ elbow deceleration &gt; wrist deceleration</figcaption></div></figure>
+    </section>
+
+
   </main>
+  <footer><h2>References</h2><ol class="references"><li id="ref-roach">N. T. Roach and D. E. Lieberman. <a href="https://doi.org/10.1242/jeb.103275">Upper body contributions to power generation during rapid, overhand throwing in humans.</a> <i>Journal of Experimental Biology</i>, 217:2139–2149, 2014.</li><li id="ref-hess">F. Hess. <a href="https://research.rug.nl/en/publications/boomerangs-aerodynamics-and-motion/">Boomerangs, Aerodynamics and Motion.</a> PhD thesis, University of Groningen, 1975.</li><li id="ref-sliding-pivot">Y. Liu and A. Billard. <a href="https://doi.org/10.1109/TRO.2025.3634386">On Transient Release Dynamics in Robot Throwing: A Sliding Pivot Model.</a> <i>IEEE Transactions on Robotics</i>, 2025. DOI: 10.1109/TRO.2025.3634386.</li></ol><p>Page layout inspired by <a href="https://nerfies.github.io/">Nerfies</a></p></footer>
 </body>
 </html>
